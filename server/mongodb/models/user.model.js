@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Schema } = mongoose;
 const { jwtKey, jwtExp } = require("../../config/dev").secrets;
+console.log(jwtKey);
 
 const userSchema = new Schema({
   firstName: { type: String, required: true },
@@ -31,7 +32,7 @@ userSchema.pre("save", async function(next) {
 userSchema.methods.generateJwt = async function() {
   const user = this;
   const token = jwt.sign({ _id: user._id.toString() }, jwtKey, {
-    jwtExp
+    expiresIn: jwtExp
   });
   user.tokens = user.tokens.concat({ token });
   await user.save();

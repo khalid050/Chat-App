@@ -25,7 +25,7 @@ mongoose.connection.on("connected", function() {
 const startApp = async () => {
   try {
     await connect(mongodbURI, options);
-    app.listen(PORT, () => console.log("Server listening on port 3000"));
+    app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
   } catch (err) {
     console.log("Unable to start server");
   }
