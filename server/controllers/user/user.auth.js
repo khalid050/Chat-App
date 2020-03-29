@@ -1,5 +1,5 @@
 const User = require("../../mongodb/models/user.model");
-const { jwtKey, jwtExp } = require("../../config/dev").secrets;
+const { jwtKey } = require("../../config/dev").secrets;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -16,16 +16,15 @@ module.exports = {
     User.findOne({ email }, async (err, user) => {
       try {
         if (user) {
-          res.send({ status: "Account already exists" }).status(401);
+          res.send({ error: "Account already exists" }).status(401);
         } else {
           const newUser = new User(credentials);
           await newUser.save();
           const token = await newUser.generateJwt();
-          res.cookie("auth_token", token);
           res.send({ newUser, token }).status(201);
         }
       } catch (err) {
-        res.status(500).send({ status: "Could not log request" });
+        res.status(500).send({ error: "Could not log request" });
       }
     });
   },
@@ -33,33 +32,27 @@ module.exports = {
   auth: async (req, res, next) => {
     try {
       const token = req.cookies["auth_token"];
+      if (!token) return;
       const decoded = jwt.verify(token, jwtKey);
       const user = await User.findOne({
         _id: decoded._id,
         "tokens.token": token
       });
       if (!user) {
-        throw new Error();
+        res.status(404).send({ error: "Cannot authenticate user" });
       }
       req.user = user;
       req.token = token;
       next();
     } catch (err) {
-      res.status(401).send({ error: "Cannot authenticate" });
+      res
+        .status(401)
+        .send({ error: "Something went wront during authentication" });
     }
   },
 
   authOwnProfile: async (req, res) => {
     res.send(req.user);
-  },
-
-  getUsers: async (req, res) => {
-    try {
-      const users = await User.find({});
-      res.send(users);
-    } catch (err) {
-      res.status(500).send("Cannot get users");
-    }
   },
 
   login: async (req, res) => {
@@ -68,19 +61,18 @@ module.exports = {
 
     try {
       if (!user) {
-        throw new Error("Unable to login");
+        res.status(404).send({ error: "Account does not exist" });
       }
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        throw new Error("Unable to login");
+        res.status(500).send({ error: "Email and/or password is incorrect" });
       } else {
         const token = await user.generateJwt();
         res.cookie("auth_token", token);
         res.status(200).send({ user, token });
       }
     } catch (error) {
-      console.log(error);
-      res.status(400).send("Unable to login");
+      res.status(500).send({ error: "Something went wrong during login" });
     }
   },
 
@@ -92,7 +84,7 @@ module.exports = {
       await req.user.save();
       res.status(200).send();
     } catch (error) {
-      res.status(500).send();
+      res.status(500).send({ error: "Error during logout" });
     }
   },
 
@@ -100,22 +92,9 @@ module.exports = {
     try {
       req.user.tokens = [];
       await req.user.save();
-      res.status(200).send();
+      res.status(200).send({ message: "User is logged out of all devices" });
     } catch (err) {
-      res.status(500).send();
+      res.status(500).send({ message: "Error duing logout" });
     }
-  },
-  deleteAccount: async (req, res) => {
-    try {
-      await req.user.remove();
-      res.send(req.user);
-    } catch (err) {
-      res.status(500).send();
-    }
-  },
-
-  updateAccount: async (req, res) => {
-    try {
-    } catch (err) {}
   }
 };

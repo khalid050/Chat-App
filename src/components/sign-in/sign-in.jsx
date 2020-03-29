@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, useHistory } from "react-router-dom";
 
 import "./sign-in.scss";
-import { signInUser } from "../../redux/sign-in/sign-in.actions";
+import { signIn } from "../../redux/authentication/auth.actions";
 
-const SignIn = ({ signInUser, history }) => {
+const SignIn = ({ signInUser }, props) => {
+  let history = useHistory();
+
   const [credentials, setCredentials] = useState({
     email: "",
     password: ""
@@ -20,7 +22,8 @@ const SignIn = ({ signInUser, history }) => {
     });
   };
 
-  const signIn = () => {
+  const signIn = e => {
+    e.preventDefault();
     const { email, password } = credentials;
 
     fetch("/auth/log-in", {
@@ -34,15 +37,12 @@ const SignIn = ({ signInUser, history }) => {
         if (res.status === 200) {
           return res;
         } else {
-          throw new Error();
+          return;
         }
       })
       .then(data => data.json())
       .then(res => {
         signInUser(res);
-      })
-      .then(() => {
-        history.push("/");
       })
 
       .catch(err => {
@@ -51,7 +51,7 @@ const SignIn = ({ signInUser, history }) => {
   };
 
   return (
-    <form className="sign-in__form">
+    <form className="sign-in__form" onSubmit={e => signIn(e)}>
       <h3 className="sign-in__form--header">Log In</h3>
       <span className="sign-in__form__span--email">Email</span>
       <input
@@ -69,9 +69,8 @@ const SignIn = ({ signInUser, history }) => {
       />
       <input
         className="sign-in__form--submit-btn"
-        type="button"
+        type="submit"
         value="Sign In"
-        onClick={signIn}
       ></input>{" "}
     </form>
   );
@@ -80,7 +79,7 @@ const SignIn = ({ signInUser, history }) => {
 const mapDispatchToProps = dispatch => {
   return {
     signInUser: credentials => {
-      dispatch(signInUser(credentials));
+      dispatch(signIn(credentials));
     }
   };
 };

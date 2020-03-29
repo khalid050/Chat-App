@@ -1,5 +1,4 @@
-import { SIGN_IN_USER_CREDENTIALS } from "./sign-in.constants";
-
+import { INITIATE_SIGN_IN, CHECK_AUTHORIZATION } from "./auth.constants";
 let initialState = {
   firstName: "",
   lastName: "",
@@ -10,17 +9,23 @@ let initialState = {
 
 export const signInUserReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SIGN_IN_USER_CREDENTIALS:
+    case INITIATE_SIGN_IN:
       const { user } = action.payload;
       const { firstName, lastName, email } = user;
       const { token } = action.payload;
-      return Object.assign({}, state, {
+
+      return {
+        ...state,
         firstName,
         lastName,
         email,
         cookie: token,
         isLoggedIn: true
-      });
+      };
+    case CHECK_AUTHORIZATION:
+      let { isLoggedIn } = action.payload;
+      return { ...state, isLoggedIn };
+
     default:
       return state;
   }

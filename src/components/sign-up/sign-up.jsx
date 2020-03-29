@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./sign-up.scss";
 import { connect } from "react-redux";
-import { signUpUser } from "../../redux/sign-up/sign-up.actions";
+import { signUp } from "../../redux/authentication/auth.actions";
 
-const Signup = ({ signUpUser, history }) => {
+const Signup = ({ signUp, history }) => {
   const [credentials, setCredentials] = useState({
     firstName: "",
     lastName: "",
@@ -33,6 +33,9 @@ const Signup = ({ signUpUser, history }) => {
       body: JSON.stringify(credentials)
     })
       .then(data => data.json())
+      .then(credentials => {
+        signUp(credentials);
+      })
       .catch(() => {
         alert("Invalid credentials");
       });
@@ -81,7 +84,7 @@ const Signup = ({ signUpUser, history }) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    signUpUser: credentials => dispatch(signUpUser(credentials))
+    signUp: credentials => dispatch(signUp(credentials))
   };
 };
 

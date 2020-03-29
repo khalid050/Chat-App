@@ -1,7 +1,7 @@
 import React from "react";
-import SignIn from "../../sign-in/sign-in";
-import Signup from "../../sign-up/sign-up";
+import Signup from "../../components/sign-up/sign-up";
 import "./sign-in-and-sign-up.scss";
+import SignIn from "../../components/sign-in/sign-in";
 
 class SignInAndSignUp extends React.Component {
   constructor(props) {

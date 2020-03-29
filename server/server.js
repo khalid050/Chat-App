@@ -27,6 +27,7 @@ const startApp = async () => {
     await connect(mongodbURI, options);
     app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
   } catch (err) {
+    console.log(err);
     console.log("Unable to start server");
   }
 };

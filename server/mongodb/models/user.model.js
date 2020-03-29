@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Schema } = mongoose;
 const { jwtKey, jwtExp } = require("../../config/dev").secrets;
-console.log(jwtKey);
 
 const userSchema = new Schema({
   firstName: { type: String, required: true },

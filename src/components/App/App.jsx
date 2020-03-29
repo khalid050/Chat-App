@@ -1,47 +1,67 @@
 import React from "react";
-import { Switch, Route, Link } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import "./App.scss";
-import SignInAndSignUp from "../pages/sign-in-and-sign-up/sign-in-and-sign-up";
-import HomePage from "../pages/homepage/homepage";
-import { withCookies } from "react-cookie";
+import SignInAndSignUp from "../../pages/sign-in-and-sign-up/sign-in-and-sign-up";
+import HomePage from "../../pages/homepage/homepage";
+import { fetchAuth } from "../../redux/authentication/auth.actions";
+import { Redirect } from "react-router";
 
+const PrivateRoute = ({ component: Component, isLoggedIn, ...rest }) => (
+  <Route
+    {...rest}
+    render={props =>
+      isLoggedIn ? (
+        <Component {...props} />
+      ) : (
+        <Redirect
+          to={{
+            pathname: "/"
+          }}
+        />
+      )
+    }
+  />
+);
 class App extends React.Component {
   constructor(props) {
     super(props);
   }
 
+  componentDidMount() {
+    let { signInUser } = this.props;
+    signInUser();
+  }
+
   render() {
-    const { state, cookies } = this.props;
-    console.log("cookies", cookies);
-    console.log(state);
+    const { isLoggedIn } = this.props;
     return (
       <Switch>
+        {/* <PrivateRoute
+          path="/home"
+          component={HomePage}
+          isLoggedIn={isLoggedIn}
+        /> */}
         <Route
-          exact
           path="/"
-          render={() =>
-            cookies.get("auth_token") ? (
-              <HomePage cookies={this.props.cookies}/>
-            ) : (
-              <SignInAndSignUp />
-            )
-          }
+          component={!isLoggedIn ? SignInAndSignUp : HomePage}
         ></Route>
       </Switch>
     );
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
+  const { isLoggedIn } = state.userCredentials;
+  return { isLoggedIn };
+};
+
+const mapDispatchToProps = dispatch => {
   return {
-    state: state,
-    cookies: ownProps.cookies
+    signInUser: () => {
+      dispatch(fetchAuth());
+    }
   };
 };
 
-// const mapStateToProps = state => {
-//   const { isLoggedIn } = state.userCredentials;
-//   return { isLoggedIn };
-// };
-export default withCookies(connect(mapStateToProps, null)(App));
+export default connect(mapStateToProps, mapDispatchToProps)(App);

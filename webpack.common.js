@@ -7,19 +7,24 @@ module.exports = {
     filename: "bundle.[contentHash].js",
     path: path.resolve(__dirname, "dist")
   },
+  devtool: "inline-source-map",
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html"
     })
   ],
   resolve: {
-    extensions: [".js", ".jsx", ".ts", ".tsx"]
+    extensions: [".js", ".jsx", ".ts", ".tsx", ".json"]
   },
   module: {
     rules: [
       {
         test: /\.s[ac]ss$/i,
         use: ["style-loader", "css-loader", "sass-loader"]
+      },
+      {
+        test: /\.(ts|tsx)$/,
+        loader: "ts-loader"
       },
       {
         test: /\.jsx?$/,
@@ -34,7 +39,9 @@ module.exports = {
   devServer: {
     proxy: {
       "/auth/sign-up": "http://localhost:3000",
-      "/auth/log-in": "http://localhost:3000"
-    }
+      "/auth/log-in": "http://localhost:3000",
+      "/auth/me": "http://localhost:3000"
+    },
+    historyApiFallback: true
   }
 };
