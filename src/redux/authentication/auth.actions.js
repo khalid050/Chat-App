@@ -1,41 +1,70 @@
 import {
   INITIATE_SIGN_IN,
-  SIGN_UP,
-  CHECK_AUTHORIZATION
+  INITIATE_SIGN_UP,
+  SIGN_IN_SUCCESS,
+  SIGN_IN_FAILURE,
+  SIGN_UP_SUCCESS,
+  SIGN_UP_FAILURE,
+  LOGOUT,
 } from "./auth.constants";
 
-export const signIn = credentials => ({
+import { alertFailure, alertSuccess, clear } from "./alerts.actions";
+import { signIn } from "../../../utils/auth";
+import { history } from "../../../utils/history";
+
+export const initiateSignIn = (credentials) => ({
   type: INITIATE_SIGN_IN,
-  payload: credentials
+  payload: credentials,
 });
 
-export const signUp = credentials => {
-  return {
-    type: SIGN_UP,
-    payload: credentials
-  };
-};
+export const signInSuccess = (user) => ({
+  type: SIGN_IN_SUCCESS,
+  payload: user,
+});
 
-export const setLoginStatus = isLoggedIn => {
-  return {
-    type: CHECK_AUTHORIZATION,
-    payload: isLoggedIn
-  };
-};
+export const signInFailure = (error) => ({
+  type: SIGN_IN_FAILURE,
+  payload: error,
+});
 
-export const fetchAuth = () => {
-  return dispatch => {
-    fetch("/auth/me", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
+export const initiateSignUp = (credentials) => ({
+  type: INITIATE_SIGN_UP,
+  payload: credentials,
+});
+
+export const signUpSuccess = (credentials) => ({
+  type: SIGN_UP_SUCCESS,
+  payload: credentials,
+});
+
+export const signUpFailure = (error) => ({
+  type: SIGN_UP_FAILURE,
+  payload: error,
+});
+
+export function login(email, password) {
+  return (dispatch) => {
+    dispatch(initiateSignIn({ email }));
+    signIn(email, password).then(
+      (user) => {
+        dispatch(signInSuccess(user));
+        history.push("/");
+      },
+      (error) => {
+        dispatch(signInFailure(error));
+        dispatch(alertFailure(error));
       }
-    }).then(res => {
-      if (res.status === 200) {
-        dispatch(setLoginStatus({ isLoggedIn: true }));
-      } else {
-        dispatch(setLoginStatus({ isLoggedIn: false }));
-      }
-    });
+    );
   };
-};
+}
+
+export function signUp() {
+  return (dispatch) => {};
+}
+
+export function logout() {
+  userService.logout();
+  return {
+    type: LOGOUT,
+  };
+}

@@ -1,67 +1,42 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Router } from "react-router-dom";
 import { connect } from "react-redux";
 import "./App.scss";
 import SignInAndSignUp from "../../pages/sign-in-and-sign-up/sign-in-and-sign-up";
 import HomePage from "../../pages/homepage/homepage";
-import { fetchAuth } from "../../redux/authentication/auth.actions";
+import { PrivateRoute } from "../private-route/private-route";
 import { Redirect } from "react-router";
+import { history } from "../../../utils/history";
+import { clear } from "../../redux/authentication/alerts.actions";
 
-const PrivateRoute = ({ component: Component, isLoggedIn, ...rest }) => (
-  <Route
-    {...rest}
-    render={props =>
-      isLoggedIn ? (
-        <Component {...props} />
-      ) : (
-        <Redirect
-          to={{
-            pathname: "/"
-          }}
-        />
-      )
-    }
-  />
-);
 class App extends React.Component {
   constructor(props) {
     super(props);
-  }
 
-  componentDidMount() {
-    let { signInUser } = this.props;
-    signInUser();
+    const { dispatch } = this.props;
+    history.listen((location, action) => {
+      dispatch(clear());
+    });
   }
 
   render() {
-    const { isLoggedIn } = this.props;
     return (
       <Switch>
-        {/* <PrivateRoute
-          path="/home"
-          component={HomePage}
-          isLoggedIn={isLoggedIn}
-        /> */}
-        <Route
-          path="/"
-          component={!isLoggedIn ? SignInAndSignUp : HomePage}
-        ></Route>
+        <Router history={history}>
+          <div>
+            <PrivateRoute exact path="/" component={HomePage} />
+            <Route path="/login" component={SignInAndSignUp} />
+          </div>
+        </Router>
       </Switch>
     );
   }
 }
 
-const mapStateToProps = state => {
-  const { isLoggedIn } = state.userCredentials;
-  return { isLoggedIn };
-};
-
-const mapDispatchToProps = dispatch => {
+function mapStateToProps(state) {
+  const { alert } = state;
   return {
-    signInUser: () => {
-      dispatch(fetchAuth());
-    }
+    alert,
   };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+}
+export default connect(mapStateToProps)(App);

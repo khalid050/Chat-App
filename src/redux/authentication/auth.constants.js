@@ -1,10 +1,9 @@
-export const INITIATE_SIGN_IN = "INITIATE_SIGN_IN";
-export const SIGN_UP = "SIGN_UP";
-
+export const INITIATE_SIGN_UP = "INITIATE_SIGN_UP";
 export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 
+export const INITIATE_SIGN_IN = "INITIATE_SIGN_IN";
 export const SIGN_IN_FAILURE = "SIGN_IN_FAILURE";
 export const SIGN_IN_SUCCESS = "SIGN_IN_SUCCESS";
 
-export const CHECK_AUTHORIZATION = "CHECK_AUTHORIZATION";
+export const LOGOUT = "LOGOUT";

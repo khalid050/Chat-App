@@ -7,7 +7,6 @@ const {
   authOwnProfile,
   logout,
   logOutAll,
-  deleteAccount
 } = require("../controllers/user/user.auth");
 
 router.post("/auth/sign-up", signUp);

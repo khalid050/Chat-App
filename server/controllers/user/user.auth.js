@@ -10,7 +10,7 @@ module.exports = {
       firstName,
       lastName,
       email,
-      password
+      password,
     };
 
     User.findOne({ email }, async (err, user) => {
@@ -36,7 +36,7 @@ module.exports = {
       const decoded = jwt.verify(token, jwtKey);
       const user = await User.findOne({
         _id: decoded._id,
-        "tokens.token": token
+        "tokens.token": token,
       });
       if (!user) {
         res.status(404).send({ error: "Cannot authenticate user" });
@@ -57,11 +57,12 @@ module.exports = {
 
   login: async (req, res) => {
     const { email, password } = req.body;
+    console.log(email, password);
     const user = await User.findOne({ email });
 
     try {
       if (!user) {
-        res.status(404).send({ error: "Account does not exist" });
+        res.status(401).send({ error: "Account does not exist" });
       }
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
@@ -79,7 +80,7 @@ module.exports = {
   logout: async (req, res) => {
     try {
       req.user.tokens = req.user.tokens.filter(
-        token => token.token !== req.token
+        (token) => token.token !== req.token
       );
       await req.user.save();
       res.status(200).send();
@@ -96,5 +97,5 @@ module.exports = {
     } catch (err) {
       res.status(500).send({ message: "Error duing logout" });
     }
-  }
+  },
 };

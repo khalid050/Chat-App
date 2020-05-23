@@ -1,70 +1,50 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter, useHistory } from "react-router-dom";
+import { login } from "../../redux/authentication/auth.actions";
 
 import "./sign-in.scss";
-import { signIn } from "../../redux/authentication/auth.actions";
 
-const SignIn = ({ signInUser }, props) => {
-  let history = useHistory();
-
+const SignIn = (props) => {
   const [credentials, setCredentials] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     let { name } = event.target;
     let { value } = event.target;
     setCredentials({
       ...credentials,
-      [name]: value
+      [name]: value,
     });
   };
 
-  const signIn = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const { email, password } = credentials;
-
-    fetch("/auth/log-in", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password })
-    })
-      .then(res => {
-        if (res.status === 200) {
-          return res;
-        } else {
-          return;
-        }
-      })
-      .then(data => data.json())
-      .then(res => {
-        signInUser(res);
-      })
-
-      .catch(err => {
-        alert("Invalid credentials");
-      });
+    const { dispatch } = props;
+    console.log(props);
+    if (email && password) {
+      dispatch(login(email, password));
+    }
   };
 
   return (
-    <form className="sign-in__form" onSubmit={e => signIn(e)}>
+    <form className="sign-in__form" onSubmit={(e) => handleSubmit(e)}>
       <h3 className="sign-in__form--header">Log In</h3>
       <span className="sign-in__form__span--email">Email</span>
       <input
         className="sign-in__form__input--email"
         name="email"
-        onChange={event => handleChange(event)}
+        onChange={(event) => handleChange(event)}
         value={credentials.email}
       />
       <span className="sign-in__form__span--password">Password</span>
       <input
         className="sign-in__form__input--password"
         name="password"
-        onChange={event => handleChange(event)}
+        onChange={(event) => handleChange(event)}
         value={credentials.password}
       />
       <input
@@ -76,12 +56,10 @@ const SignIn = ({ signInUser }, props) => {
   );
 };
 
-const mapDispatchToProps = dispatch => {
+function mapStateToProps(state) {
+  const { loggingIn } = state.user;
   return {
-    signInUser: credentials => {
-      dispatch(signIn(credentials));
-    }
+    loggingIn,
   };
-};
-
-export default withRouter(connect(null, mapDispatchToProps)(SignIn));
+}
+export default connect(mapStateToProps, null)(SignIn);

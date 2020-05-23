@@ -1,16 +1,10 @@
 import { combineReducers } from "redux";
-import { persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
-import { signInUserReducer } from "./authentication/auth.reducers";
-
-const persistConfig = {
-  key: "root",
-  storage,
-  whitelist: ["userCredentials"]
-};
+import { authReducer } from "./authentication/auth.reducers";
+import { alertReducer } from "./authentication/alerts.reducers";
 
 const rootReducer = combineReducers({
-  userCredentials: signInUserReducer
+  user: authReducer,
+  alert: alertReducer,
 });
 
-export default persistReducer(persistConfig, rootReducer);
+export default rootReducer;

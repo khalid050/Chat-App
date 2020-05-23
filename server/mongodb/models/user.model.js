@@ -14,13 +14,13 @@ const userSchema = new Schema({
     {
       token: {
         type: String,
-        required: true
-      }
-    }
-  ]
+        required: true,
+      },
+    },
+  ],
 });
 
-userSchema.pre("save", async function(next) {
+userSchema.pre("save", async function (next) {
   const user = this;
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(user.password, 8);
@@ -28,17 +28,17 @@ userSchema.pre("save", async function(next) {
   next();
 });
 
-userSchema.methods.generateJwt = async function() {
+userSchema.methods.generateJwt = async function () {
   const user = this;
   const token = jwt.sign({ _id: user._id.toString() }, jwtKey, {
-    expiresIn: jwtExp
+    expiresIn: jwtExp,
   });
   user.tokens = user.tokens.concat({ token });
   await user.save();
   return token;
 };
 
-userSchema.methods.toJSON = function() {
+userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
   delete userObject.password;
