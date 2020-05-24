@@ -17,7 +17,6 @@ export function signIn(email, password) {
 
   return fetch("/auth/log-in", requestOptions)
     .then((data) => {
-      console.log(data);
       return data.json();
     })
     .then((user) => {
@@ -27,7 +26,7 @@ export function signIn(email, password) {
     });
 }
 
-export function logout() {
+export function signOut() {
   localStorage.removeItem("user");
 }
 

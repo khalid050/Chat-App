@@ -9,7 +9,7 @@ import {
 } from "./auth.constants";
 
 import { alertFailure, alertSuccess, clear } from "./alerts.actions";
-import { signIn } from "../../../utils/auth";
+import { signIn, signOut } from "../../../utils/auth";
 import { history } from "../../../utils/history";
 
 export const initiateSignIn = (credentials) => ({
@@ -63,7 +63,8 @@ export function signUp() {
 }
 
 export function logout() {
-  userService.logout();
+  signOut();
+  history.push("/login");
   return {
     type: LOGOUT,
   };
