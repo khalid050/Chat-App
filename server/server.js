@@ -6,7 +6,6 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 
 const { connect, options } = require("./mongodb/db.config");
-const { mongodbURI, PORT } = require("../config/dev").config;
 const userRouter = require("./routes/user.routes");
 
 
@@ -22,10 +21,11 @@ mongoose.connection.on("connected", function () {
   console.log("connection established successfully");
 });
 
+const port = process.env.PORT || 3000
 const startApp = async () => {
   try {
-    await connect(mongodbURI, options);
-    app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+    await connect(process.env.mongodbURI, options);
+    app.listen(port, () => console.log(`Server listening on port ${port}`));
   } catch (err) {
     console.log(err);
     console.log("Unable to start server");
