@@ -6,9 +6,9 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 
 const { connect, options } = require("./mongodb/db.config");
-const { mongodbURI, PORT } = require("./config/dev");
-
+const { mongodbURI, PORT } = require("../config/dev").config;
 const userRouter = require("./routes/user.routes");
+
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -18,7 +18,7 @@ app.use(cookieParser());
 app.use(express.static("dist"));
 app.use(userRouter);
 
-mongoose.connection.on("connected", function() {
+mongoose.connection.on("connected", function () {
   console.log("connection established successfully");
 });
 

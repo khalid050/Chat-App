@@ -1,5 +1,5 @@
 const User = require("../../mongodb/models/user.model");
-const { jwtKey } = require("../../config/dev").secrets;
+// const { jwtKey } = require("../../../config/dev").secrets;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -33,7 +33,7 @@ module.exports = {
     try {
       const token = req.cookies["auth_token"];
       if (!token) return;
-      const decoded = jwt.verify(token, jwtKey);
+      const decoded = jwt.verify(token, process.env.jwtKey);
       const user = await User.findOne({
         _id: decoded._id,
         "tokens.token": token,
@@ -69,7 +69,6 @@ module.exports = {
         res.status(500).send({ error: "Email and/or password is incorrect" });
       } else {
         const token = await user.generateJwt();
-        res.cookie("auth_token", token);
         res.status(200).send({ user, token });
       }
     } catch (error) {

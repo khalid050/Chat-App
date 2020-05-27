@@ -17,3 +17,4 @@ router.post("/auth/log-out-all", auth, logOutAll);
 router.get("/auth/me", auth, authOwnProfile);
 
 module.exports = router;
+ 

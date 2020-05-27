@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Schema } = mongoose;
-const { jwtKey, jwtExp } = require("../../config/dev").secrets;
+const { jwtKey, jwtExp } = require("../../../config/dev");
 
 const userSchema = new Schema({
   firstName: { type: String, required: true },
