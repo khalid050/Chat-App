@@ -21,6 +21,7 @@ mongoose.connection.on("connected", function () {
 });
 
 const port = process.env.PORT || 3000;
+
 const startApp = async () => {
   try {
     await connect(process.env.mongodbURI, options);
@@ -30,6 +31,5 @@ const startApp = async () => {
     console.log("Unable to start server");
   }
 };
-
 
 module.exports = { startApp, app };

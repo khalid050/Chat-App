@@ -57,7 +57,6 @@ module.exports = {
 
   login: async (req, res) => {
     const { email, password } = req.body;
-    console.log(email, password);
     const user = await User.findOne({ email });
 
     try {
@@ -66,7 +65,7 @@ module.exports = {
       }
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        res.status(500).send({ error: "Email and/or password is incorrect" });
+        res.status(401).send({ error: "Email and/or password is incorrect" });
       } else {
         const token = await user.generateJwt();
         res.status(200).send({ user, token });
