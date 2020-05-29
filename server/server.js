@@ -8,7 +8,6 @@ const mongoose = require("mongoose");
 const { connect, options } = require("./mongodb/db.config");
 const userRouter = require("./routes/user.routes");
 
-
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
@@ -21,7 +20,7 @@ mongoose.connection.on("connected", function () {
   console.log("connection established successfully");
 });
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 const startApp = async () => {
   try {
     await connect(process.env.mongodbURI, options);
@@ -32,4 +31,5 @@ const startApp = async () => {
   }
 };
 
-module.exports = startApp;
+
+module.exports = { startApp, app };

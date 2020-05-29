@@ -1,5 +1,4 @@
 const User = require("../../mongodb/models/user.model");
-// const { jwtKey } = require("../../../config/dev").secrets;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -16,14 +15,15 @@ module.exports = {
     User.findOne({ email }, async (err, user) => {
       try {
         if (user) {
-          res.send({ error: "Account already exists" }).status(401);
+          res.status(401).send({ error: "Account already exists" });
         } else {
           const newUser = new User(credentials);
           await newUser.save();
           const token = await newUser.generateJwt();
-          res.send({ newUser, token }).status(201);
+          res.status(201).send({ newUser, token });
         }
       } catch (err) {
+        console.log(err);
         res.status(500).send({ error: "Could not log request" });
       }
     });
