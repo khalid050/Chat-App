@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { withRouter, useHistory } from "react-router-dom";
 import { login } from "../../redux/authentication/auth.actions";
 
 import "./sign-in.scss";
@@ -24,7 +23,6 @@ const SignIn = (props) => {
     e.preventDefault();
     const { email, password } = credentials;
     const { dispatch } = props;
-    console.log(props);
     if (email && password) {
       dispatch(login(email, password));
     }

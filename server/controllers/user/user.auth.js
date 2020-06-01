@@ -61,6 +61,7 @@ module.exports = {
 
     try {
       if (!user) {
+        console.log("no user,");
         res.status(401).send({ error: "Account does not exist" });
       }
       const isMatch = await bcrypt.compare(password, user.password);
