@@ -7,16 +7,10 @@ import HomePage from "../../pages/homepage/homepage";
 import { PrivateRoute } from "../private-route/private-route";
 import { Redirect } from "react-router";
 import { history } from "../../../utils/history";
-import { clear } from "../../redux/authentication/alerts.actions";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-
-    const { dispatch } = this.props;
-    history.listen((location, action) => {
-      dispatch(clear());
-    });
   }
 
   render() {
@@ -33,10 +27,4 @@ class App extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { alert } = state;
-  return {
-    alert,
-  };
-}
-export default connect(mapStateToProps)(App);
+export default App;

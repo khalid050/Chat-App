@@ -8,7 +8,6 @@ import {
   LOGOUT,
 } from "./auth.constants";
 
-import { alertFailure, alertSuccess, clear } from "./alerts.actions";
 import { signIn, signOut } from "../../../utils/auth";
 import { history } from "../../../utils/history";
 
@@ -52,7 +51,6 @@ export function login(email, password) {
       },
       (error) => {
         dispatch(signInFailure(error));
-        dispatch(alertFailure(error));
       }
     );
   };
