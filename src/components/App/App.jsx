@@ -27,4 +27,11 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user.user,
+    loggedIn: state.user.loggedIn,
+  };
+};
+
+export default connect(mapStateToProps, null)(App);

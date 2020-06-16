@@ -8,7 +8,7 @@ import {
 let user = JSON.parse(localStorage.getItem("user"));
 const initialState = user ? { loggedIn: true, user } : {};
 
-export function authReducer(state = initialState, action) {
+export function signInReducer(state = initialState, action) {
   switch (action.type) {
     case INITIATE_SIGN_IN:
       return {

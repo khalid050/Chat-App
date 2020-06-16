@@ -6,7 +6,8 @@
     "start": "webpack-dev-server --open --config webpack.dev.js & env-cmd -f ./config/dev.env nodemon server/index.js",
     "build": "webpack --config webpack.prod.js",
     "test": "webpack-dev-server --open --config webpack.dev.js & env-cmd -f ./config/test.env nodemon server/index.js",
-    "test-jest": "env-cmd -f ./config/test.env jest --watch --runInBand"
+    "test-jest": "env-cmd -f ./config/test.env jest --watch --runInBand",
+    "open-db": "/Users/khalidumar/mongodb/bin/mongod --dbpath='/Users/khalidumar/data' "
   },
   "jest": {
     "testEnvironment": "node"
