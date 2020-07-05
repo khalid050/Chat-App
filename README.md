@@ -1,1 +1,1 @@
-Chat Application
+Notes Application
